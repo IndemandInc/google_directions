@@ -5,6 +5,7 @@
 
 var request = require('request');
 var qs = require('query-string');
+const ZERO_RESULT_IDENTIFIER = 'ZERO_RESULTS';
 
 // validation of input
 function validateInput(params, cb) {
@@ -33,7 +34,9 @@ module.exports = {
 
 		// make request to google server
 		request(url, function(err, res, body) {
-			return cb(err, JSON.parse(body));
+			body = JSON.parse(body);
+			if(body.status === ZERO_RESULT_IDENTIFIER) return cb(new Error(ZERO_RESULT_IDENTIFIER, 'No result found'), body);
+			return cb(err, body);
 		});
 
 	},
@@ -48,7 +51,9 @@ module.exports = {
 		var url = "https://maps.googleapis.com/maps/api/directions/json?" + qs.stringify(params);
 		// make request to google server
 		request(url, function(err, res, body) {
-			return cb(err, JSON.parse(body).routes[0].legs[0].steps);
+			body = JSON.parse(body);
+			if(body.status === ZERO_RESULT_IDENTIFIER) return cb(new Error(ZERO_RESULT_IDENTIFIER, 'No result found'), body);
+			return cb(err, body.routes[0].legs[0].steps);
 		});
 
 	},
@@ -64,7 +69,9 @@ module.exports = {
 
 		// make request to google server
 		request(url, function(err, res, body) {
-			return cb(err, JSON.parse(body).routes[0].legs[0].distance.text);
+			body = JSON.parse(body);
+			if(body.status === ZERO_RESULT_IDENTIFIER) return cb(new Error(ZERO_RESULT_IDENTIFIER, 'No result found'), body);
+			return cb(err, body.routes[0].legs[0].distance.text);
 		});
 
 	},
@@ -80,7 +87,9 @@ module.exports = {
 
 		// make request to google server
 		request(url, function(err, res, body) {
-			return cb(err, JSON.parse(body).routes[0].legs[0].duration.text);
+			body = JSON.parse(body);
+			if(body.status === ZERO_RESULT_IDENTIFIER) return cb(new Error(ZERO_RESULT_IDENTIFIER, 'No result found'), body);
+			return cb(err, body.routes[0].legs[0].duration.text);
 		});
 
 	},
@@ -96,7 +105,9 @@ module.exports = {
 
 		// make request to google server
 		request(url, function(err, res, body) {
-			return cb(err, JSON.parse(body).routes[0].legs[0].start_address);
+			body = JSON.parse(body);
+			if(body.status === ZERO_RESULT_IDENTIFIER) return cb(new Error(ZERO_RESULT_IDENTIFIER, 'No result found'), body);
+			return cb(err, body.routes[0].legs[0].start_address);
 		});
 
 	},
@@ -112,7 +123,9 @@ module.exports = {
 
 		// make request to google server
 		request(url, function(err, res, body) {
-			return cb(err, JSON.parse(body).routes[0].legs[0].end_address);
+			body = JSON.parse(body);
+			if(body.status === ZERO_RESULT_IDENTIFIER) return cb(new Error(ZERO_RESULT_IDENTIFIER, 'No result found'), body);
+			return cb(err, body.routes[0].legs[0].end_address);
 		});
 
 	}
